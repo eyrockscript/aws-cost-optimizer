@@ -1,0 +1,50 @@
+# Node
+node_modules/
+dist/
+.npm
+*.log
+npm-debug.log*
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+
+# Build artifacts
+*.js.map
+*.d.ts
+coverage/
+.nyc_output/
+
+# LocalStack
+.localstack/
+localstack-data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

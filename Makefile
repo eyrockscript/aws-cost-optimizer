@@ -1,4 +1,4 @@
-.PHONY: help deploy destroy test lint localstack-up localstack-down terraform-validate
+.PHONY: help deploy destroy test lint localstack-up localstack-down terraform-validate install install-pre-commit
 
 help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n\nTargets:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -36,3 +36,11 @@ deploy: ## Deploy to AWS via Terraform (requires AWS credentials)
 
 destroy: ## Destroy AWS resources (use with caution)
 	terraform -chdir=infra destroy -var-file=envs/dev.tfvars
+
+install: ## Install all Node.js dependencies
+	cd services && npm install
+	cd frontend && npm install
+
+install-pre-commit: ## Install pre-commit hooks
+	pip install pre-commit
+	pre-commit install

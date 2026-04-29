@@ -1,0 +1,68 @@
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.88.4
+    hooks:
+      - id: terraform_fmt
+        args: [--args=-recursive]
+      - id: terraform_validate
+        args: [--args=-no-color]
+      - id: terraform_tflint
+        args:
+          - --args=--recursive
+      - id: terraform_checkov
+        args:
+          - --args=--soft-fail
+          - --args=--output github_failed_only
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: no-commit-to-branch
+        args: [--branch, main]
+
+  - repo: local
+    hooks:
+      - id: eslint-services
+        name: ESLint (services)
+        language: node
+        entry: bash -c 'cd services && npx eslint --config eslint.config.json "src/**/*.ts"'
+        files: ^services/src/
+        types: [file]
+        pass_filenames: false
+
+      - id: typecheck-services
+        name: TypeScript check (services)
+        language: node
+        entry: bash -c 'cd services && npx tsc --noEmit'
+        files: ^services/src/
+        types: [file]
+        pass_filenames: false
+
+      - id: typecheck-frontend
+        name: TypeScript check (frontend)
+        language: node
+        entry: bash -c 'cd frontend && npx tsc --noEmit'
+        files: ^frontend/src/
+        types: [file]
+        pass_filenames: false
+
+      - id: prettier-services
+        name: Prettier (services)
+        language: node
+        entry: bash -c 'cd services && npx prettier --check "src/**/*.ts"'
+        files: ^services/src/
+        types: [file]
+        pass_filenames: false
+
+      - id: prettier-frontend
+        name: Prettier (frontend)
+        language: node
+        entry: bash -c 'cd frontend && npx prettier --check "src/**/*.{ts,tsx}"'
+        files: ^frontend/src/
+        types: [file]
+        pass_filenames: false

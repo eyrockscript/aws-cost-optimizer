@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" font-family="Amazon Ember, Helvetica Neue, Arial, sans-serif" font-size="12">
+  <defs>
+    <style>
+      .aws-label { font-size: 11px; fill: #1a1a1a; text-anchor: middle; }
+      .aws-sublabel { font-size: 9px; fill: #555; text-anchor: middle; }
+      .group-label { font-size: 13px; font-weight: bold; fill: #232f3e; }
+      .arrow { stroke: #555; stroke-width: 1.5; fill: none; marker-end: url(#arr); }
+      .section-bg { rx: 8; ry: 8; }
+    </style>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#555"/>
+    </marker>
+    <!-- Lambda icon shape -->
+    <symbol id="lambda-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="4" fill="#FF9900"/>
+      <polygon points="8,32 16,8 22,8 28,20 22,20 20,26 26,32 20,32 17,26 14,32" fill="white"/>
+    </symbol>
+    <!-- SQS icon -->
+    <symbol id="sqs-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="4" fill="#FF4F8B"/>
+      <rect x="6" y="14" width="28" height="6" rx="2" fill="white"/>
+      <rect x="6" y="22" width="22" height="6" rx="2" fill="white"/>
+    </symbol>
+    <!-- DynamoDB icon -->
+    <symbol id="ddb-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="4" fill="#4053D6"/>
+      <ellipse cx="20" cy="11" rx="12" ry="4" fill="white"/>
+      <rect x="8" y="11" width="24" height="18" fill="#4053D6"/>
+      <ellipse cx="20" cy="29" rx="12" ry="4" fill="white"/>
+      <ellipse cx="20" cy="20" rx="12" ry="3" fill="none" stroke="white" stroke-width="1.5"/>
+    </symbol>
+    <!-- EventBridge icon -->
+    <symbol id="eb-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="4" fill="#FF4F8B"/>
+      <circle cx="20" cy="20" r="10" fill="none" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="10" x2="20" y2="30" stroke="white" stroke-width="1.5"/>
+      <line x1="10" y1="20" x2="30" y2="20" stroke="white" stroke-width="1.5"/>
+      <line x1="13" y1="13" x2="27" y2="27" stroke="white" stroke-width="1"/>
+      <line x1="27" y1="13" x2="13" y2="27" stroke="white" stroke-width="1"/>
+    </symbol>
+    <!-- CloudWatch icon -->
+    <symbol id="cw-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="4" fill="#E7157B"/>
+      <path d="M6,28 Q10,14 16,20 Q20,24 24,16 Q28,8 34,22" stroke="white" stroke-width="2" fill="none"/>
+      <circle cx="34" cy="22" r="3" fill="white"/>
+    </symbol>
+    <!-- SNS icon -->
+    <symbol id="sns-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="4" fill="#FF4F8B"/>
+      <path d="M20,8 L32,28 H8 Z" fill="white"/>
+      <rect x="17" y="28" width="6" height="5" rx="1" fill="white"/>
+    </symbol>
+    <!-- API Gateway icon -->
+    <symbol id="apigw-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="4" fill="#A020F0"/>
+      <rect x="6" y="12" width="10" height="16" rx="2" fill="white"/>
+      <rect x="24" y="12" width="10" height="16" rx="2" fill="white"/>
+      <line x1="16" y1="20" x2="24" y2="20" stroke="white" stroke-width="2"/>
+      <polygon points="22,17 26,20 22,23" fill="white"/>
+    </symbol>
+    <!-- CloudFront icon -->
+    <symbol id="cf-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="4" fill="#8C4FFF"/>
+      <circle cx="20" cy="20" r="12" fill="none" stroke="white" stroke-width="2"/>
+      <ellipse cx="20" cy="20" rx="6" ry="12" fill="none" stroke="white" stroke-width="1.5"/>
+      <line x1="8" y1="20" x2="32" y2="20" stroke="white" stroke-width="1.5"/>
+    </symbol>
+    <!-- S3 icon -->
+    <symbol id="s3-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="4" fill="#7AA116"/>
+      <path d="M20,6 L34,14 L34,26 L20,34 L6,26 L6,14 Z" fill="white" opacity="0.9"/>
+      <path d="M20,6 L34,14 L20,22 L6,14 Z" fill="white" opacity="0.5"/>
+    </symbol>
+    <!-- GitHub Actions icon (simple) -->
+    <symbol id="gh-icon" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="20" fill="#24292e"/>
+      <circle cx="20" cy="16" r="5" fill="white"/>
+      <path d="M10,32 Q10,24 20,24 Q30,24 30,32" fill="white"/>
+    </symbol>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="700" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#232f3e">AWS Cost Optimizer — System Architecture</text>
+  <text x="700" y="52" text-anchor="middle" font-size="12" fill="#555">Serverless event-driven cost scanner · Terraform IaC · React Dashboard · CI/CD via OIDC</text>
+
+  <!-- ═══════ SCHEDULING ZONE ═══════ -->
+  <rect x="20" y="70" width="180" height="120" rx="8" fill="#fff8e1" stroke="#FF9900" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="110" y="90" class="group-label" text-anchor="middle" font-size="11" fill="#FF9900">SCHEDULING</text>
+  <use href="#eb-icon" x="70" y="100" width="40" height="40"/>
+  <text x="110" y="152" class="aws-label">EventBridge</text>
+  <text x="110" y="164" class="aws-sublabel">Cron 02:00 UTC</text>
+
+  <!-- ═══════ ORCHESTRATION ═══════ -->
+  <use href="#lambda-icon" x="265" y="100" width="40" height="40"/>
+  <text x="285" y="152" class="aws-label">Orchestrator</text>
+  <text x="285" y="164" class="aws-sublabel">Fan-out λ</text>
+
+  <!-- Arrow EB → Orchestrator -->
+  <line x1="200" y1="120" x2="260" y2="120" class="arrow"/>
+
+  <!-- ═══════ SQS QUEUES ZONE ═══════ -->
+  <rect x="355" y="70" width="160" height="760" rx="8" fill="#fce4ec" stroke="#FF4F8B" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="435" y="90" class="group-label" text-anchor="middle" font-size="11" fill="#c2185b">SQS QUEUES + DLQs</text>
+
+  <!-- 7 SQS queues -->
+  <use href="#sqs-icon" x="395" y="100" width="32" height="32"/>
+  <text x="435" y="144" class="aws-sublabel">ec2-idle</text>
+
+  <use href="#sqs-icon" x="395" y="210" width="32" height="32"/>
+  <text x="435" y="254" class="aws-sublabel">ebs-orphan</text>
+
+  <use href="#sqs-icon" x="395" y="318" width="32" height="32"/>
+  <text x="435" y="362" class="aws-sublabel">eip-unassoc</text>
+
+  <use href="#sqs-icon" x="395" y="426" width="32" height="32"/>
+  <text x="435" y="470" class="aws-sublabel">rds-underutil</text>
+
+  <use href="#sqs-icon" x="395" y="534" width="32" height="32"/>
+  <text x="435" y="578" class="aws-sublabel">snapshots-old</text>
+
+  <use href="#sqs-icon" x="395" y="642" width="32" height="32"/>
+  <text x="435" y="686" class="aws-sublabel">nat-gw-low</text>
+
+  <use href="#sqs-icon" x="395" y="750" width="32" height="32"/>
+  <text x="435" y="794" class="aws-sublabel">lambda-overprov</text>
+
+  <!-- Arrow Orchestrator → SQS (fan-out) -->
+  <line x1="310" y1="120" x2="355" y2="116" class="arrow"/>
+  <line x1="310" y1="120" x2="355" y2="226" class="arrow" stroke-dasharray="3,2"/>
+  <line x1="310" y1="120" x2="355" y2="334" class="arrow" stroke-dasharray="3,2"/>
+  <line x1="310" y1="120" x2="355" y2="442" class="arrow" stroke-dasharray="3,2"/>
+  <line x1="310" y1="120" x2="355" y2="550" class="arrow" stroke-dasharray="3,2"/>
+  <line x1="310" y1="120" x2="355" y2="658" class="arrow" stroke-dasharray="3,2"/>
+  <line x1="310" y1="120" x2="355" y2="766" class="arrow" stroke-dasharray="3,2"/>
+
+  <!-- ═══════ WORKERS ZONE ═══════ -->
+  <rect x="555" y="70" width="160" height="760" rx="8" fill="#fff3e0" stroke="#FF9900" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="635" y="90" class="group-label" text-anchor="middle" font-size="11" fill="#e65100">WORKER LAMBDAS</text>
+
+  <use href="#lambda-icon" x="595" y="100" width="32" height="32"/>
+  <text x="635" y="144" class="aws-sublabel">ec2-idle check</text>
+
+  <use href="#lambda-icon" x="595" y="210" width="32" height="32"/>
+  <text x="635" y="254" class="aws-sublabel">ebs-orphan check</text>
+
+  <use href="#lambda-icon" x="595" y="318" width="32" height="32"/>
+  <text x="635" y="362" class="aws-sublabel">eip-unassoc check</text>
+
+  <use href="#lambda-icon" x="595" y="426" width="32" height="32"/>
+  <text x="635" y="470" class="aws-sublabel">rds-underutil check</text>
+
+  <use href="#lambda-icon" x="595" y="534" width="32" height="32"/>
+  <text x="635" y="578" class="aws-sublabel">snapshots-old check</text>
+
+  <use href="#lambda-icon" x="595" y="642" width="32" height="32"/>
+  <text x="635" y="686" class="aws-sublabel">nat-gw-low check</text>
+
+  <use href="#lambda-icon" x="595" y="750" width="32" height="32"/>
+  <text x="635" y="794" class="aws-sublabel">lambda-overprov check</text>
+
+  <!-- SQS → Workers arrows -->
+  <line x1="520" y1="116" x2="555" y2="116" class="arrow"/>
+  <line x1="520" y1="226" x2="555" y2="226" class="arrow"/>
+  <line x1="520" y1="334" x2="555" y2="334" class="arrow"/>
+  <line x1="520" y1="442" x2="555" y2="442" class="arrow"/>
+  <line x1="520" y1="550" x2="555" y2="550" class="arrow"/>
+  <line x1="520" y1="658" x2="555" y2="658" class="arrow"/>
+  <line x1="520" y1="766" x2="555" y2="766" class="arrow"/>
+
+  <!-- ═══════ STORAGE / OBSERVABILITY ═══════ -->
+  <!-- DynamoDB -->
+  <use href="#ddb-icon" x="780" y="390" width="50" height="50"/>
+  <text x="805" y="452" class="aws-label">DynamoDB</text>
+  <text x="805" y="464" class="aws-sublabel">Single-table + GSI1</text>
+  <text x="805" y="476" class="aws-sublabel">TTL on dismissed</text>
+
+  <!-- CloudWatch -->
+  <use href="#cw-icon" x="780" y="190" width="50" height="50"/>
+  <text x="805" y="252" class="aws-label">CloudWatch</text>
+  <text x="805" y="264" class="aws-sublabel">Custom metrics + Alarms</text>
+
+  <!-- SNS -->
+  <use href="#sns-icon" x="920" y="190" width="50" height="50"/>
+  <text x="945" y="252" class="aws-label">SNS</text>
+  <text x="945" y="264" class="aws-sublabel">Alerts Topic</text>
+
+  <!-- Workers → DynamoDB -->
+  <line x1="720" y1="415" x2="775" y2="415" class="arrow"/>
+  <text x="747" y="410" font-size="9" fill="#555" text-anchor="middle">upsert findings</text>
+
+  <!-- Workers → CloudWatch -->
+  <line x1="720" y1="215" x2="775" y2="215" class="arrow"/>
+  <text x="747" y="210" font-size="9" fill="#555" text-anchor="middle">put metrics</text>
+
+  <!-- CloudWatch → SNS -->
+  <line x1="835" y1="215" x2="915" y2="215" class="arrow"/>
+  <text x="875" y="210" font-size="9" fill="#555" text-anchor="middle">alarm breach</text>
+
+  <!-- ═══════ API LAYER ═══════ -->
+  <rect x="890" y="330" width="160" height="200" rx="8" fill="#f3e5f5" stroke="#A020F0" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="970" y="350" class="group-label" text-anchor="middle" font-size="11" fill="#7b1fa2">API HANDLERS</text>
+
+  <use href="#apigw-icon" x="920" y="360" width="32" height="32"/>
+  <text x="970" y="404" class="aws-sublabel">API Gateway HTTP API</text>
+  <text x="970" y="416" class="aws-sublabel">API key auth</text>
+
+  <use href="#lambda-icon" x="910" y="430" width="28" height="28"/>
+  <text x="938" y="470" class="aws-sublabel">list-findings</text>
+
+  <use href="#lambda-icon" x="948" y="430" width="28" height="28"/>
+  <text x="976" y="470" class="aws-sublabel">get-summary</text>
+
+  <use href="#lambda-icon" x="986" y="430" width="28" height="28"/>
+  <text x="1014" y="470" class="aws-sublabel">dismiss</text>
+
+  <!-- API handlers → DynamoDB -->
+  <line x1="890" y1="450" x2="865" y2="430" class="arrow"/>
+  <text x="877" y="445" font-size="9" fill="#555" text-anchor="middle">query/write</text>
+
+  <!-- ═══════ FRONTEND ═══════ -->
+  <rect x="1100" y="330" width="270" height="200" rx="8" fill="#e8f5e9" stroke="#7AA116" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="1235" y="350" class="group-label" text-anchor="middle" font-size="11" fill="#2e7d32">FRONTEND HOSTING</text>
+
+  <use href="#cf-icon" x="1130" y="360" width="40" height="40"/>
+  <text x="1170" y="412" class="aws-label">CloudFront</text>
+  <text x="1170" y="424" class="aws-sublabel">CDN + HTTPS + OAC</text>
+
+  <use href="#s3-icon" x="1230" y="360" width="40" height="40"/>
+  <text x="1270" y="412" class="aws-label">S3</text>
+  <text x="1270" y="424" class="aws-sublabel">React app bundle</text>
+
+  <!-- CloudFront → S3 -->
+  <line x1="1215" y1="380" x2="1228" y2="380" class="arrow"/>
+
+  <!-- User browser -->
+  <rect x="1130" y="450" width="210" height="60" rx="6" fill="#fff" stroke="#aaa" stroke-width="1"/>
+  <text x="1235" y="476" class="aws-label">React Dashboard</text>
+  <text x="1235" y="490" class="aws-sublabel">FindingsTable · SavingsChart · SeverityBadge</text>
+
+  <!-- Dashboard → CloudFront -->
+  <line x1="1235" y1="450" x2="1200" y2="402" class="arrow"/>
+  <text x="1218" y="430" font-size="9" fill="#555" text-anchor="middle">HTTPS</text>
+
+  <!-- CloudFront → API Gateway -->
+  <line x1="1128" y1="390" x2="1060" y2="390" class="arrow"/>
+  <text x="1094" y="385" font-size="9" fill="#555" text-anchor="middle">REST + API key</text>
+
+  <!-- ═══════ CI/CD ZONE ═══════ -->
+  <rect x="20" y="760" width="310" height="110" rx="8" fill="#e3f2fd" stroke="#1976d2" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="175" y="780" class="group-label" text-anchor="middle" font-size="11" fill="#1565c0">CI/CD — GitHub Actions + OIDC</text>
+
+  <use href="#gh-icon" x="40" y="790" width="32" height="32"/>
+  <text x="56" y="834" class="aws-sublabel" text-anchor="middle">GitHub Actions</text>
+
+  <rect x="90" y="790" width="220" height="60" rx="4" fill="white" stroke="#1976d2" stroke-width="1"/>
+  <text x="200" y="808" font-size="10" fill="#1565c0" text-anchor="middle" font-weight="bold">ci.yml: lint · test · sec-scan</text>
+  <text x="200" y="822" font-size="9" fill="#555" text-anchor="middle">tflint · eslint · checkov · tfsec · vitest</text>
+  <text x="200" y="836" font-size="9" fill="#555" text-anchor="middle">deploy.yml: OIDC → tf apply → smoke test</text>
+
+  <!-- Legend -->
+  <rect x="730" y="820" width="620" height="60" rx="6" fill="white" stroke="#ccc" stroke-width="1"/>
+  <text x="1040" y="838" text-anchor="middle" font-size="11" font-weight="bold" fill="#232f3e">Stack at a Glance</text>
+  <text x="750" y="854" font-size="10" fill="#555">Runtime: Node.js 20 · TypeScript strict · AWS SDK v3 · Lambda Powertools</text>
+  <text x="750" y="868" font-size="10" fill="#555">IaC: Terraform 1.7 · reusable modules · default_tags · validation blocks</text>
+  <text x="750" y="882" font-size="10" fill="#555">Tests: Vitest ≥80% coverage · LocalStack integration · RFC 7807 errors · Zod schemas</text>
+</svg>

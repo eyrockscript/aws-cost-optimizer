@@ -1,0 +1,97 @@
+@startuml aws-cost-optimizer-architecture
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/ApplicationIntegration/EventBridge.puml
+!include AWSPuml/ApplicationIntegration/SimpleQueueService.puml
+!include AWSPuml/ApplicationIntegration/SimpleNotificationService.puml
+!include AWSPuml/Compute/Lambda.puml
+!include AWSPuml/Database/DynamoDB.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/NetworkingContentDelivery/APIGateway.puml
+!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!include AWSPuml/Storage/SimpleStorageService.puml
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+title AWS Cost Optimizer — System Architecture
+
+EventBridge(eb, "EventBridge\nCron 02:00 UTC", "Scheduled Rule")
+Lambda(orch, "Orchestrator\nLambda", "Fan-out to 7 queues")
+
+together {
+  SimpleQueueService(q1, "SQS\nec2-idle", "Queue + DLQ")
+  SimpleQueueService(q2, "SQS\nebs-orphan", "Queue + DLQ")
+  SimpleQueueService(q3, "SQS\neip-unassoc", "Queue + DLQ")
+  SimpleQueueService(q4, "SQS\nrds-underutil", "Queue + DLQ")
+  SimpleQueueService(q5, "SQS\nsnapshots-old", "Queue + DLQ")
+  SimpleQueueService(q6, "SQS\nnat-gw-low", "Queue + DLQ")
+  SimpleQueueService(q7, "SQS\nlambda-overprov", "Queue + DLQ")
+}
+
+together {
+  Lambda(w1, "EC2 Idle\nCheck", "Worker")
+  Lambda(w2, "EBS Orphan\nCheck", "Worker")
+  Lambda(w3, "EIP Unassoc\nCheck", "Worker")
+  Lambda(w4, "RDS Underutil\nCheck", "Worker")
+  Lambda(w5, "Old Snapshots\nCheck", "Worker")
+  Lambda(w6, "NAT GW Low\nCheck", "Worker")
+  Lambda(w7, "Lambda Overprov\nCheck", "Worker")
+}
+
+DynamoDB(ddb, "DynamoDB\nFindings Table", "Single-table + GSI1\nTTL on dismissed")
+CloudWatch(cw, "CloudWatch\nMetrics + Alarms", "Custom namespace")
+SimpleNotificationService(sns, "SNS\nAlerts Topic", "Email / Slack")
+
+APIGateway(apigw, "API Gateway\nHTTP API", "API key auth")
+together {
+  Lambda(al, "list-findings\nLambda", "API handler")
+  Lambda(as, "get-summary\nLambda", "API handler")
+  Lambda(ad, "dismiss-finding\nLambda", "API handler")
+}
+
+CloudFront(cf, "CloudFront\nDistribution", "CDN + HTTPS")
+SimpleStorageService(s3, "S3\nDashboard Bucket", "Private + OAC")
+
+eb --> orch : triggers
+orch --> q1
+orch --> q2
+orch --> q3
+orch --> q4
+orch --> q5
+orch --> q6
+orch --> q7
+
+q1 --> w1
+q2 --> w2
+q3 --> w3
+q4 --> w4
+q5 --> w5
+q6 --> w6
+q7 --> w7
+
+w1 --> ddb : upsert findings
+w2 --> ddb
+w3 --> ddb
+w4 --> ddb
+w5 --> ddb
+w6 --> ddb
+w7 --> ddb
+
+w1 --> cw : put metrics
+w2 --> cw
+w3 --> cw
+w7 --> cw
+
+cw --> sns : alarm breach
+
+apigw --> al
+apigw --> as
+apigw --> ad
+al --> ddb
+as --> ddb
+ad --> ddb
+
+cf --> s3
+cf --> apigw : REST + API key
+
+@enduml

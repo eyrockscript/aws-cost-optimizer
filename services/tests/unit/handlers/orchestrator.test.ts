@@ -9,9 +9,28 @@ vi.mock('../../../src/infra/metrics.js', () => ({
   MetricUnit: { Count: 'Count' },
 }))
 
+vi.mock('../../../src/shared/logger.js', () => ({
+  logger: { addContext: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+}))
+
 import { sqsClient } from '../../../src/shared/aws-clients.js'
 import { handler } from '../../../src/handlers/orchestrator.js'
-import type { ScheduledEvent } from 'aws-lambda'
+import type { ScheduledEvent, Context } from 'aws-lambda'
+
+const mockContext: Context = {
+  invokedFunctionArn: 'arn:aws:lambda:us-east-1:123456789012:function:orchestrator',
+  awsRequestId: 'test-request-id',
+  functionName: 'orchestrator',
+  functionVersion: '$LATEST',
+  memoryLimitInMB: '128',
+  logGroupName: '/aws/lambda/orchestrator',
+  logStreamName: 'test-stream',
+  callbackWaitsForEmptyEventLoop: false,
+  getRemainingTimeInMillis: () => 30000,
+  done: () => {},
+  fail: () => {},
+  succeed: () => {},
+}
 
 const mockSend = vi.mocked(sqsClient.send)
 
@@ -41,13 +60,13 @@ const fakeEvent: ScheduledEvent = {
 describe('orchestrator handler', () => {
   it('sends 7 SQS messages when all queues are configured', async () => {
     mockSend.mockResolvedValue({})
-    await handler(fakeEvent)
+    await handler(fakeEvent, mockContext)
     expect(mockSend).toHaveBeenCalledTimes(7)
   })
 
   it('continues if one queue fails', async () => {
     mockSend.mockRejectedValueOnce(new Error('throttled')).mockResolvedValue({})
-    await handler(fakeEvent)
+    await handler(fakeEvent, mockContext)
     expect(mockSend.mock.calls.length).toBeGreaterThanOrEqual(6)
   })
 })

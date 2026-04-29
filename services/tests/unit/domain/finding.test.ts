@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { createFinding, buildFindingKeys, dismissFinding } from '../../../src/domain/finding.js'
 
 describe('buildFindingKeys', () => {
@@ -62,7 +62,11 @@ describe('createFinding', () => {
 })
 
 describe('dismissFinding', () => {
+  afterEach(() => { vi.useRealTimers() })
+
   it('changes status to dismissed and updates gsi1pk', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-01-01T00:00:00.000Z'))
     const finding = createFinding({
       accountId: '123456789012',
       region: 'us-east-1',
@@ -72,6 +76,7 @@ describe('dismissFinding', () => {
       description: 'Test',
       monthlySavingsUsd: 50,
     })
+    vi.setSystemTime(new Date('2026-01-01T00:01:00.000Z'))
     const dismissed = dismissFinding(finding)
     expect(dismissed.status).toBe('dismissed')
     expect(dismissed.gsi1pk).toBe('STATUS#dismissed')

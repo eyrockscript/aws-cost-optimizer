@@ -115,6 +115,105 @@ aws-cost-optimizer/
 
 ---
 
+## Deploy to AWS (Real Account)
+
+### Prerequisites
+
+- AWS account with admin access (for initial bootstrap only)
+- [Terraform](https://developer.hashicorp.com/terraform/install) ≥ 1.7
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) configured (`aws configure`)
+- [Node.js 20](https://nodejs.org/) + `npm`
+- A GitHub repository (for OIDC-based CI/CD)
+
+### Step 1 — Bootstrap Terraform remote state
+
+Terraform needs an S3 bucket and a DynamoDB table to store state before the first apply.
+These two resources must be created manually (or via a separate `bootstrap` script):
+
+```bash
+# Replace with your preferred region and a globally unique bucket name
+REGION=us-east-1
+BUCKET=my-org-tf-state-aws-cost-optimizer
+
+aws s3api create-bucket --bucket "$BUCKET" --region "$REGION" \
+  --create-bucket-configuration LocationConstraint="$REGION"
+
+aws s3api put-bucket-versioning --bucket "$BUCKET" \
+  --versioning-configuration Status=Enabled
+
+aws dynamodb create-table \
+  --table-name tf-lock-aws-cost-optimizer \
+  --attribute-definitions AttributeName=LockID,AttributeType=S \
+  --key-schema AttributeName=LockID,KeyType=HASH \
+  --billing-mode PAY_PER_REQUEST \
+  --region "$REGION"
+```
+
+Update `infra/backend.tf` with the bucket name and region you just created.
+
+### Step 2 — First Terraform apply
+
+```bash
+cd infra
+terraform init
+terraform apply -var-file=envs/dev.tfvars
+```
+
+Terraform will output:
+- `api_url` — the API Gateway endpoint
+- `dashboard_url` — the CloudFront URL for the React app
+- `api_key_ssm_path` — SSM path where the generated API key is stored
+
+Retrieve the API key:
+```bash
+aws ssm get-parameter --name "$(terraform output -raw api_key_ssm_path)" \
+  --with-decryption --query Parameter.Value --output text
+```
+
+### Step 3 — Configure GitHub secrets
+
+Required in **Settings → Secrets → Actions** of your fork:
+
+| Secret | Value |
+|--------|-------|
+| `AWS_DEPLOY_ROLE_ARN` | ARN of the OIDC role created by the `github-oidc` Terraform module (`terraform output github_oidc_role_arn`) |
+| `API_KEY` | Value retrieved from SSM in Step 2 |
+
+After these are set, every push to `main` triggers the `deploy.yml` workflow:
+OIDC auth → bundle Lambdas → `terraform apply` → smoke test → build frontend → S3 sync + CloudFront invalidation.
+
+### IAM permissions required by Lambda workers
+
+The Lambda execution roles (created by Terraform) need the following **read-only** AWS permissions:
+
+| Service | Actions |
+|---------|---------|
+| EC2 | `ec2:DescribeInstances`, `ec2:DescribeAddresses`, `ec2:DescribeVolumes`, `ec2:DescribeSnapshots` |
+| RDS | `rds:DescribeDBInstances` |
+| CloudWatch | `cloudwatch:GetMetricStatistics`, `cloudwatch:PutMetricData` |
+| Lambda | `lambda:ListFunctions`, `lambda:GetFunctionConfiguration` |
+| DynamoDB | `dynamodb:PutItem`, `dynamodb:GetItem`, `dynamodb:UpdateItem`, `dynamodb:Query`, `dynamodb:Scan` |
+| SSM | `ssm:GetParameter` (for the API key) |
+| SQS | `sqs:SendMessage`, `sqs:ReceiveMessage`, `sqs:DeleteMessage` |
+
+All permissions are least-privilege and scoped to the resources created by the stack.
+No admin or write permissions to EC2/RDS/Lambda are granted — the scanner only reads.
+
+### Estimated monthly cost (dev environment, us-east-1)
+
+| Service | Usage assumption | Cost |
+|---------|-----------------|------|
+| Lambda | 8 functions, once/day, < 30 s each | ~$0.01 |
+| DynamoDB | On-demand, < 1 K findings | ~$0.25 |
+| SQS | < 1 M requests/month | Free tier |
+| API Gateway | < 1 M requests/month | Free tier |
+| CloudFront + S3 | < 1 GB transfer | ~$0.02 |
+| EventBridge | 1 rule, 30 invocations/month | Free tier |
+| CloudWatch Logs | < 5 GB | Free tier |
+| **Total** | | **≈ $0.30/month** |
+
+---
+
 ## Cost & Cleanup
 
 **Development cost: $0** — all development and testing uses LocalStack community edition. No real AWS resources are created until you explicitly run `make deploy` with valid AWS credentials.

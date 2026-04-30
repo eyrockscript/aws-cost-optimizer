@@ -10,6 +10,10 @@
 
 ---
 
+<video src="docs/demo.mp4" autoplay loop muted playsinline width="100%"></video>
+
+---
+
 ## Architecture
 
 ![AWS Cost Optimizer Architecture](docs/architecture.svg)
